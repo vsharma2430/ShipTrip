@@ -83,12 +83,8 @@ check_token = async (req,res,next) => {
     catch(err)
     {
         console.log(err)
-    }
-    finally
-    {
         return res.status(403).json({success:false, error: 'username or token is invalid'});
     }
-    
 }
 
 module.exports = {delete_old_token,auth_user,token_user,check_token}
