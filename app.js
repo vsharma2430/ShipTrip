@@ -2,6 +2,7 @@ const express = require('express')
 const app = express()
 const port = 5000
 const users = require('./routes/users')
+const login = require('./routes/login')
 const pool = require('./db/index')
 const morgan = require('morgan')
 
@@ -18,5 +19,6 @@ app.get('/',async (req,res)=>{
 
 //route- users
 app.use('/api/v1/users',users)
+app.use('/api/v1/login',login)
 
 app.listen(port,console.log(`Listening on port ${port}`))
