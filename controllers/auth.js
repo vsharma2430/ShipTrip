@@ -1,4 +1,4 @@
-const pool= require('../db/index.js')
+const {pool,executeTransaction}= require('../db/index.js')
 const { v4: uuidv4 } = require('uuid');
 
 delete_old_token = async(req,res,next)=>{
@@ -62,27 +62,24 @@ token_user = async (req,res) => {
 check_token = async (req,res,next) => {
     let auth_token = req.headers.authorization
     let {id}=req.params
-
-    try{
-        if(id)
-            {
-                const query = {
-                    text: "select token, created_at, expires_at FROM public.auth_token where username=$1;",
-                    values: [id],
-                };
-                const result = await pool.query(query);
-                let existing_token = result.rows[0];
-                
-                if(existing_token.token === auth_token)
-                {
-                    console.log('Authorised token')
-                    next()
-                }
-            }
-    }
-    catch(err)
+    
+    if(id)
     {
-        console.log(err)
+        const query = {
+            text: "select token, created_at, expires_at FROM public.auth_token where username=$1;",
+            values: [id],
+        };
+        const result = await pool.query(query);
+        let existing_token = result.rows[0];
+        
+        if(existing_token.token === auth_token)
+        {
+            console.log('Authorised token')
+            next()
+        }
+    }
+    else
+    {
         return res.status(403).json({success:false, error: 'username or token is invalid'});
     }
 }
